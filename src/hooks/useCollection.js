@@ -1,3 +1,8 @@
+/*
+ * fetch collection data from firestore
+ * set listener for any runtime changes in that collection
+ */
+
 import { useState, useEffect } from 'react';
 import { db } from '../firebase/config';
 import { collection, onSnapshot } from 'firebase/firestore';
