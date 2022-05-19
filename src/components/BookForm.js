@@ -1,17 +1,23 @@
 import { useState } from 'react';
+import { useAuthContext } from '../hooks/useAuthContext';
 
+// firebase imports
 import { db } from '../firebase/config';
 import { collection, addDoc } from 'firebase/firestore';
 
 export default function BookForm() {
   const [newBook, setNewBook] = useState('');
+  const { user } = useAuthContext();
 
   const handleSubmit = async (e) => {
+    // prevent page reload
     e.preventDefault();
 
+    // create reference to books collections
     const ref = collection(db, 'books');
 
-    await addDoc(ref, { title: newBook });
+    // add new book API
+    await addDoc(ref, { title: newBook, id: user.uid });
 
     // clean form inputs
     setNewBook('');
