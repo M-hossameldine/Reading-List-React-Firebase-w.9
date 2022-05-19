@@ -1,12 +1,16 @@
+import { useAuthContext } from './useAuthContext';
+
 // firebase
 import { auth } from '../firebase/config';
 import { signOut } from 'firebase/auth';
 
-export const useLogout = async () => {
+export const useLogout = () => {
+  const { dispatch } = useAuthContext();
+
   const logout = () => {
     signOut(auth)
       .then((res) => {
-        console.log('user is logged out');
+        dispatch({ type: 'LOGOUT' });
       })
       .catch((err) => {
         console.log(err.message);
