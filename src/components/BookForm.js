@@ -17,7 +17,7 @@ export default function BookForm() {
     const ref = collection(db, 'books');
 
     // add new book API
-    await addDoc(ref, { title: newBook, id: user.uid });
+    await addDoc(ref, { title: newBook, uid: user.uid });
 
     // clean form inputs
     setNewBook('');
