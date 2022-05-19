@@ -1,17 +1,27 @@
 /*
+ * Firestore Hook
  * fetch collection data from firestore
  * set listener for any runtime changes in that collection
  */
 
-import { useState, useEffect } from 'react';
-import { db } from '../firebase/config';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { useState, useEffect, useRef } from 'react';
 
-export const useCollection = (c) => {
+// firebase imports
+import { db } from '../firebase/config';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+
+export const useCollection = (c, _q) => {
   const [documents, setDocuments] = useState(null);
+
+  // set up query
+  const q = useRef(_q).current;
 
   useEffect(() => {
     let ref = collection(db, c);
+
+    if (q) {
+      ref = query(ref, where(...q));
+    }
 
     //  get collection value and set listener for future changes
     const unsub = onSnapshot(ref, (snapshot) => {
@@ -22,14 +32,13 @@ export const useCollection = (c) => {
         result.push({ id: doc.id, ...doc.data() });
       });
 
+      console.log('result', result);
       setDocuments(result);
     });
 
     // on unmount, cleanup firestore collection listener
-    return () => {
-      unsub();
-    };
-  }, [c]);
+    return () => unsub();
+  }, [c, q]);
 
   return { documents };
 };
